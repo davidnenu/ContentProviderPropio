@@ -1,6 +1,7 @@
 package com.example.dm2.contentproviderpropio;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -62,6 +63,7 @@ public class UsuariosProvider extends ContentProvider{
         db = usdbh.getWritableDatabase();
         Cursor c = db.query(TABLA_USUARIOS, projection, where,
                 selectionArgs, null, null,sortOrder);
+        //db.close();
         return c;
     }
 
@@ -82,8 +84,14 @@ public class UsuariosProvider extends ContentProvider{
 
 
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
+    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+
+        long regId;
+        db = usdbh.getWritableDatabase();
+        regId = db.insert(TABLA_USUARIOS, null, values);
+        Uri newUri = ContentUris.withAppendedId (CONTENT_URI, regId);
+        return newUri;
+
     }
 
     @Override
@@ -97,6 +105,7 @@ public class UsuariosProvider extends ContentProvider{
         }
         db = usdbh.getWritableDatabase();
         cont = db.update(TABLA_USUARIOS, values, where, selectionArgs);
+        //db.close();
         return cont;
     }
     @Override
@@ -109,6 +118,7 @@ public class UsuariosProvider extends ContentProvider{
         }
         db = usdbh.getWritableDatabase();
         cont = db.delete(TABLA_USUARIOS, where,selectionArgs);
+        //db.close();
         return cont;
     }
 
